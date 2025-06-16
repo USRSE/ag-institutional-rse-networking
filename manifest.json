@@ -1,0 +1,15 @@
+{
+  "name": "Institutional RSE Networking",
+  "short_name": "Institutional RSE Networking",
+  "start_url": "/ag-institutional-rse-networking/",
+  "scope": "/ag-institutional-rse-networking/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/ag-institutional-rse-networking/favicon.svg",
+      "sizes": "512x512"
+    }
+  ]
+}
