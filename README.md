@@ -1,5 +1,5 @@
 # ag-institutional-rse-networking
-Welcome to the Institutional RSE Networking Affinity Group!
+Welcome to the [Institutional RSE Networking Affinity Group](https://us-rse.org/ag-institutional-rse-networking/)!
 
 The Institutional RSE Networking Affinity Group connects Research Software Engineers (RSEs) who support or aspire to develop RSE communities within their organizations. Whether your institution has an established RSE program or is just beginning to recognize RSE work, this group provides a collaborative space to share strategies and experiences.
 Our members focus on:
