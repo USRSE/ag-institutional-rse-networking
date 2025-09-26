@@ -2,3 +2,6 @@ baseURL = 'https://usrse.github.io/ag-institutional-rse-networking/'
 languageCode = 'en-us'
 title = 'Institutional RSE Networking'
 theme = "hugo-book"
+
+[params]
+    BookSection = 'posts'
