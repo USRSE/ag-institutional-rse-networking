@@ -1,0 +1,3 @@
+{{/* Project override: inject custom button styles */}}
+{{ $btns := resources.Get "css/custom-buttons.css" | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $btns.RelPermalink }}" integrity="{{ $btns.Data.Integrity }}" crossorigin="anonymous">

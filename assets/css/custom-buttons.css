@@ -1,0 +1,87 @@
+/* Button styling aligned with hugo-book theme */
+.slack-button {
+  --btn-bg: var(--color-link);
+  --btn-bg-hover: color-mix(in srgb, var(--color-link) 85%, black);
+  --btn-fg: #fff;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.875rem; /* matches $font-size-14 */
+  font-weight: 600;
+  line-height: 1.2;
+  padding: 0.55rem 1rem; /* derive from theme padding scale */
+  border-radius: 0.25rem; /* matches $padding-4 */
+  background: var(--btn-bg);
+  color: var(--btn-fg) !important;
+  text-decoration: none;
+  border: 1px solid var(--btn-bg);
+  transition: background-color .18s ease, color .18s ease, box-shadow .18s ease, transform .1s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,.15), 0 0 0 0 rgba(0,85,187,.4);
+  cursor: pointer;
+}
+
+.slack-button:hover,
+.slack-button:focus-visible {
+  background: var(--btn-bg-hover);
+  border-color: var(--btn-bg-hover);
+  text-decoration: none;
+}
+
+.slack-button:focus-visible {
+  outline: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,.2), 0 0 0 3px rgba(0,85,187,.35);
+}
+
+.slack-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(0,0,0,.25) inset;
+}
+
+/* Outline variant: blends with theme body background, accent border */
+.slack-button.outline {
+  background: transparent;
+  color: var(--color-link) !important;
+  border: 1px solid var(--color-link);
+  --btn-bg: var(--color-link);
+  --btn-bg-hover: var(--color-link);
+}
+.slack-button.outline:hover,
+.slack-button.outline:focus-visible {
+  background: var(--color-link);
+  color: #fff !important;
+}
+
+/* Subtle variant (text style button) */
+.slack-button.texty {
+  background: transparent;
+  border: none;
+  padding: 0.25rem 0.35rem;
+  color: var(--color-link) !important;
+  box-shadow: none;
+}
+.slack-button.texty:hover,
+.slack-button.texty:focus-visible {
+  background: rgba(0,0,0,0.06);
+  color: var(--color-link) !important;
+}
+
+/* Dark theme adjustments (hugo-book sets different link color) */
+@media (prefers-color-scheme: dark) {
+  .slack-button {
+    --btn-bg-hover: color-mix(in srgb, var(--color-link) 70%, white);
+    box-shadow: 0 1px 2px rgba(0,0,0,.6), 0 0 0 0 rgba(132,178,255,.4);
+  }
+  .slack-button.outline:hover,
+  .slack-button.outline:focus-visible {
+    box-shadow: 0 2px 4px rgba(0,0,0,.6), 0 0 0 3px rgba(132,178,255,.4);
+  }
+  .slack-button.texty:hover,
+  .slack-button.texty:focus-visible {
+    background: rgba(255,255,255,0.07);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .slack-button { transition: none; }
+}
