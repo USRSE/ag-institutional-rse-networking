@@ -11,10 +11,16 @@ Optional named params:
 
 Security: Keeps HTML in a trusted template instead of inline raw HTML in Markdown, so Goldmark unsafe mode is not required.
 */}}
-{{ $href := .Get "href" | default (.Get 0) }}
-{{ if not $href }}{{ errorf "slackbutton shortcode: missing required 'href' parameter" }}{{ end }}
+{{ $raw := .Get "href" | default (.Get 0) }}
+{{ if not $raw }}{{ errorf "slackbutton shortcode: missing required 'href' parameter" }}{{ end }}
+{{/* Strip optional markdown autolink angle brackets and whitespace */}}
+{{ $href := $raw | strings.TrimPrefix "<" | strings.TrimSuffix ">" | strings.TrimSpace }} {{/* Basic scheme allowlist to
+  avoid ZgotmplZ when browsers sanitize */}} {{ $allowed :=(hasPrefix $href "https://" ) | or (hasPrefix $href "http://"
+  ) | or (hasPrefix $href "/" ) }} {{ if not $allowed }}{{
+  errorf "slackbutton shortcode: unsupported or unsafe href '%s'" $href }}{{ end }}
 {{ $text := .Inner | default "Slack" }}
 {{ $target := .Get "target" | default "_blank" }}
 {{ $rel := .Get "rel" | default "noopener noreferrer" }}
 {{ $extra := .Get "class" }}
-<a href="{{ $href }}" class="slack-button{{ if $extra }} {{ $extra }}{{ end }}" target="{{ $target }}" rel="{{ $rel }}">{{ $text }}</a>
+<a href="{{ $href | safeURL }}" class="slack-button{{ if $extra }} {{ $extra }}{{ end }}" target="{{ $target }}"
+  rel="{{ $rel }}">{{ $text }}</a>
