@@ -1,0 +1,20 @@
+{{/*
+Shortcode: slackbutton
+Usage examples:
+  {{< slackbutton href="https://usrse.slack.com/archives/C07U53KED19" >}}Join our Slack{{< /slackbutton >}}
+
+Optional named params:
+  href   - (string) destination URL (required)
+  target - (string) defaults to _blank for external links
+  rel    - (string) defaults to noopener noreferrer
+  class  - (string) extra classes to append
+
+Security: Keeps HTML in a trusted template instead of inline raw HTML in Markdown, so Goldmark unsafe mode is not required.
+*/}}
+{{ $href := .Get "href" | default (.Get 0) }}
+{{ if not $href }}{{ errorf "slackbutton shortcode: missing required 'href' parameter" }}{{ end }}
+{{ $text := .Inner | default "Slack" }}
+{{ $target := .Get "target" | default "_blank" }}
+{{ $rel := .Get "rel" | default "noopener noreferrer" }}
+{{ $extra := .Get "class" }}
+<a href="{{ $href }}" class="slack-button{{ if $extra }} {{ $extra }}{{ end }}" target="{{ $target }}" rel="{{ $rel }}">{{ $text }}</a>
