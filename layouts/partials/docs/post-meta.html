@@ -10,6 +10,13 @@
   </div>
 {{ end }}
 
+{{ if .Params.participants }}
+<blockquote class="book-hint info">
+<p><strong>Discussion Participants</strong><br>
+{{ delimit .Params.participants ", " }}</p>
+</blockquote>
+{{ end }}
+
 {{ range $taxonomy, $_ := .Site.Taxonomies }}
   {{ with $terms := $.GetTerms $taxonomy }}
   <div class="text-small">
