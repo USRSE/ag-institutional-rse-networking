@@ -9,3 +9,5 @@ The Institutional RSE Networking Affinity Group connects Research Software Engin
 * We welcome participants at any stage of their RSE community-building journey, from those exploring initial steps to those leading established groups. Through regular meetings, members exchange practical insights on community outreach, event planning, and maintaining active engagement while addressing the unique organizational contexts and challenges each institution faces.
 
 {{< slackbutton href="<https://usrse.slack.com/archives/C07U53KED19>" >}}Join our Slack{{< /slackbutton >}}
+
+{{< snippets >}}

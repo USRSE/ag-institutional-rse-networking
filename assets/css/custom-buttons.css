@@ -85,3 +85,12 @@
 @media (prefers-reduced-motion: reduce) {
   .slack-button { transition: none; }
 }
+
+.markdown .book-hint.important {
+    border-color: #4486dd;
+    background-color: #4486dd1a;
+}
+
+.markdown a:visited {
+    color: #0055bb;
+}
