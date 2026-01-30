@@ -1,0 +1,18 @@
+
+<h2>Check Out Our Recent Posts</h2>
+{{ $posts := first 3 (where site.RegularPages "Section" "posts") }}
+
+{{ range $posts }}
+<blockquote class="book-hint important">
+<p><strong><a href="{{ .RelPermalink }}">{{ .Title }}</a></strong><br>
+By: {{ delimit .Params.authors ", " }}</span>, {{ .Date.Format "Jan 2, 2006" }}
+<br>
+<i>{{ .Params.excerpt }}</i>
+</blockquote>
+{{ end }}
+
+
+
+
+
+

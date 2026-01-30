@@ -3,6 +3,8 @@ title: November Meetup Summary—Totally Worth Reading!
 date: 2025-11-18T14:42:44-05:00
 params:
     authors: ["Julia Damerow", "J.C. Subida"]
+    participants: ["Julia Damerow", "J.C. Subida"]
+excerpt: On November 18, 2025, the institutional networking affinity group got together to discuss "10 recommended practices for creating a robust community of remote developers". 
 # bookComments: false
 # bookSearchExclude: false
 ---
