@@ -101,6 +101,28 @@
     transform: translate(-50%, -50%); z-index: 2; }
   .pin.tbd { background: var(--ph-bg); box-shadow: 0 0 0 2px var(--ph-bd); }
 
+  /* "Who are we" is the tallest slide, so its sizes also scale with the
+     window height (min of vw/vh) to keep the legend above the nav bar. */
+  .slide.who { padding-top: 4vh; padding-bottom: calc(2.2vh + 3.8rem); }
+  .slide.who h2 { font-size: clamp(1.2rem, min(3.4vw, 6vh), 2.7rem); margin-bottom: 1.2vh; }
+  .slide.who h2::after { height: 4px; margin-top: .25em; }
+  .slide.who .sub { font-size: clamp(.8rem, min(1.9vw, 3vh), 1.45rem); }
+  /* Always two rows: 3 cards on top, 2 centered below. Each card spans two
+     of six columns; the 4th card starts at column 2 to center the second
+     row. Update these rules if the number of presenters changes. */
+  .slide.who #people { display: grid; grid-template-columns: repeat(6, 1fr);
+    gap: 1.6vh 1.8vw; margin-top: 1.2vh; }
+  .slide.who .person { width: auto; grid-column: span 2; padding: 1.3vh 1.3vw; }
+  .slide.who .person:nth-child(4) { grid-column: 2 / span 2; }
+  .slide.who .person .name { font-size: clamp(.85rem, min(1.8vw, 3.1vh), 1.45rem); }
+  .slide.who .person .inst { font-size: clamp(.72rem, min(1.3vw, 2.3vh), 1.05rem); }
+  .slide.who .person .role { font-size: clamp(.68rem, min(1.2vw, 2.1vh), 1rem); }
+  .slide.who .person .spec { margin-top: 1vh; padding: 1.5vh 0 .5vh; }
+  .slide.who .legend { padding: 1.2vh 1.8vw .8vh; margin-top: auto; }
+  .slide.who .legend-title { margin-bottom: 1.2vh; }
+  .slide.who .legend-labels { height: 1.8em; margin-top: 1vh;
+    font-size: clamp(.72rem, min(1.45vw, 2.5vh), 1.15rem); }
+
   /* Hiding the spectrum: by default the space is KEPT (visibility), so
      the cards never move or change height when you toggle it. */
   body.no-spectrum .spec, body.no-spectrum .legend { visibility: hidden; }
