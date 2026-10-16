@@ -123,6 +123,18 @@
   .slide.who .legend-labels { height: 1.8em; margin-top: 1vh;
     font-size: clamp(.72rem, min(1.45vw, 2.5vh), 1.15rem); }
 
+  /* join (Mentimeter) slide */
+  .join { display: flex; align-items: center; gap: 5vw; }
+  .join-text { flex: 1; }
+  .join-text p { margin-bottom: 1vh; }
+  .join-url { font-size: clamp(1.4rem, min(3.2vw, 5.5vh), 2.6rem); font-weight: 700; color: var(--pink-dark); }
+  .join-code { font-size: clamp(2.4rem, min(6.5vw, 11vh), 5.5rem); font-weight: 700; color: var(--pink);
+    letter-spacing: .06em; line-height: 1.1; margin: .5vh 0 2vh; font-variant-numeric: tabular-nums; }
+  /* QR codes need a white margin (quiet zone) to scan reliably */
+  .qr { background: #fff; padding: min(2.5vw, 4vh); border-radius: 14px;
+    border: 5px solid var(--tint2); line-height: 0; }
+  .qr img { display: block; width: min(30vw, 52vh); height: auto; }
+
   /* Hiding the spectrum: by default the space is KEPT (visibility), so
      the cards never move or change height when you toggle it. */
   body.no-spectrum .spec, body.no-spectrum .legend { visibility: hidden; }
@@ -191,7 +203,7 @@
     </div>
     <ol class="agenda">
       <li class="now">Introduction <span class="time">(10 min)</span></li>
-      <li>Slido poll: identify needs and choose breakout groups <span class="time">(20 min)</span></li>
+      <li>Mentimeter poll: identify needs and choose breakout groups <span class="time">(20 min)</span></li>
       <li>Breakout groups: facilitated, 3+ topics <span class="time">(50 min)</span></li>
       <li>Share and report</li>
       <li>Recap and synthesis <span class="time">(10 min)</span></li>
@@ -269,6 +281,21 @@
       <div class="card"><h3>Relatedness</h3><p>Feeling connected and that we belong. Peers to share successes, frustrations, and interests.</p></div>
     </div>
     <p class="cite">Our framing: why do RSEs seek out local communities?</p>
+  </section>
+
+  <!-- 9 Join the Mentimeter poll -->
+  <section class="slide">
+    <h2>Join the poll</h2>
+    <div class="join">
+      <div class="join-text">
+        <p>Go to</p>
+        <p class="join-url">menti.com</p>
+        <p>and enter the code</p>
+        <p class="join-code">8927 0282</p>
+        <p class="sub">Or scan the QR code with your phone camera.</p>
+      </div>
+      <div class="qr"><img src="usrse26-bof-menti-qr.png" alt="QR code to join the Mentimeter poll, code 8927 0282"></div>
+    </div>
   </section>
 
 </div>
