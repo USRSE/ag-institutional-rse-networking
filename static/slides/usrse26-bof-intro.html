@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Building an Institutional RSE Community</title>
+<style>
+  :root {
+    --pink: #741755;
+    --pink-dark: #561040;
+    --tint: #f7eef4;
+    --tint2: #ecd9e5;
+    --bg: #ffffff;
+    --text: #2a2230;
+    --muted: #6b6275;
+    --gold: #c98a00;
+    --ph-bg: #fff3b0;
+    --ph-fg: #5c4a00;
+    --ph-bd: #b58900;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--bg); color: var(--text);
+    font-family: "Segoe UI", Helvetica, Arial, sans-serif; overflow: hidden; }
+  .deck { position: relative; width: 100%; height: 100vh; }
+  .slide {
+    position: absolute; inset: 0; padding: 6vh 7vw 10vh;
+    display: none; flex-direction: column; justify-content: center;
+    animation: fade .35s ease; background: var(--bg);
+  }
+  .slide.active { display: flex; }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  h1 { font-size: clamp(2rem, 5vw, 3.8rem); line-height: 1.15; margin-bottom: 2vh; }
+  h2 { font-size: clamp(1.6rem, 3.4vw, 2.7rem); margin-bottom: 2.5vh; color: var(--pink); line-height: 1.2; }
+  h2::after { content: ""; display: block; width: 3.2em; height: 5px; background: var(--gold);
+    border-radius: 3px; margin-top: .35em; }
+  h3 { font-size: clamp(1.05rem, 1.9vw, 1.5rem); margin-bottom: 1vh; color: var(--pink-dark); }
+  p, li { font-size: clamp(1rem, 1.9vw, 1.45rem); line-height: 1.5; }
+  ul { list-style: none; }
+  li { margin-bottom: 1.4vh; padding-left: 1.4em; position: relative; }
+  li::before { content: "▸"; color: var(--pink); position: absolute; left: 0; }
+  .sub { color: var(--muted); font-size: clamp(1rem, 1.9vw, 1.45rem); }
+
+  /* placeholders */
+  .ph { background: var(--ph-bg); color: var(--ph-fg); border: 1px dashed var(--ph-bd);
+    border-radius: 6px; padding: 0 .35em; }
+
+  /* cards */
+  .cards { display: grid; gap: 2vw; grid-template-columns: repeat(3, 1fr); margin-top: 2vh; }
+  .cards.two { grid-template-columns: repeat(2, 1fr); }
+  .card { background: var(--tint); border-radius: 14px; padding: 2.4vh 1.6vw;
+    border-top: 5px solid var(--pink); }
+  .card:nth-child(2) { border-top-color: var(--gold); }
+  .card p { font-size: clamp(.9rem, 1.45vw, 1.12rem); color: var(--muted); }
+
+  /* stats */
+  .stat-row { display: flex; gap: 2vw; margin: 2vh 0 1.5vh; }
+  .stat { flex: 1; background: var(--tint); border-radius: 14px; padding: 3vh 1.5vw; text-align: center; }
+  .stat .num { font-size: clamp(2.5rem, 7vw, 5rem); font-weight: 700; color: var(--pink); line-height: 1; }
+  .stat .lbl { font-size: clamp(.9rem, 1.6vw, 1.2rem); color: var(--muted); margin-top: 1vh; }
+  blockquote { border-left: 5px solid var(--gold); padding-left: 1.2vw;
+    font-size: clamp(1.05rem, 2vw, 1.5rem); font-style: italic; }
+  .cite { color: var(--muted); font-size: clamp(.8rem, 1.2vw, 1rem); margin-top: 1.2vh; }
+
+  /* "Who are we" slide: content fixed at top, spectrum pinned to bottom.
+     This layout is the same whether the spectrum is shown or hidden. */
+  .slide.who { justify-content: flex-start; }
+  .slide.who h2 { margin-bottom: 1.5vh; }
+
+  /* continuous spectrum track (shared by legend and cards) */
+  .track { position: relative; height: 6px; border-radius: 3px;
+    background: linear-gradient(90deg, var(--pink), var(--gold)); }
+
+  /* shared spectrum (one, full width, bottom of slide) */
+  .legend { margin-top: auto; padding: 1.6vh 1.8vw 1.2vh; background: var(--tint);
+    border-radius: 14px; }
+  .legend-title { font-size: clamp(.7rem, 1.1vw, .9rem); letter-spacing: .08em; text-transform: uppercase;
+    color: var(--muted); font-weight: 700; margin-bottom: 1.6vh; }
+  .legend .track { height: 10px; border-radius: 5px; }
+  .legend .tick { position: absolute; top: 50%; width: 3px; height: 20px; border-radius: 2px;
+    background: var(--pink-dark); transform: translate(-50%, -50%); }
+  .legend-labels { position: relative; height: 2.2em; margin-top: 1.2vh;
+    font-size: clamp(.8rem, 1.45vw, 1.15rem); }
+  .legend-labels span { position: absolute; top: 0; white-space: nowrap; font-weight: 600;
+    color: var(--pink-dark); transform: translateX(-50%); }
+  .legend-labels span.first { transform: none; }
+  .legend-labels span.last { transform: translateX(-100%); }
+
+  /* presenters */
+  #people { display: flex; flex-wrap: wrap; justify-content: center; gap: 2vh 1.8vw; margin-top: 1.5vh; }
+  .person { width: calc((100% - 3.6vw) / 3); background: var(--tint); border-radius: 14px;
+    padding: 1.8vh 1.3vw; border-top: 5px solid var(--pink); }
+  .person .name { font-size: clamp(1rem, 1.8vw, 1.45rem); font-weight: 700; color: var(--pink-dark); }
+  .person .inst { font-size: clamp(.8rem, 1.3vw, 1.05rem); margin-top: .3vh; }
+  .person .role { font-size: clamp(.75rem, 1.2vw, 1rem); color: var(--muted); }
+  .person .name .ph, .person .inst .ph, .person .role .ph { display: inline-block; }
+  .person .spec { margin-top: 1.4vh; padding: 1.8vh 0 .6vh; border-top: 1px solid var(--tint2); }
+  .person .track { margin: 0 12px; }
+  .pin { position: absolute; top: 50%; width: 22px; height: 22px; border-radius: 50%;
+    background: var(--pink-dark); border: 3px solid #fff; box-shadow: 0 0 0 2px var(--pink-dark);
+    transform: translate(-50%, -50%); z-index: 2; }
+  .pin.tbd { background: var(--ph-bg); box-shadow: 0 0 0 2px var(--ph-bd); }
+
+  /* Hiding the spectrum: by default the space is KEPT (visibility), so
+     the cards never move or change height when you toggle it. */
+  body.no-spectrum .spec, body.no-spectrum .legend { visibility: hidden; }
+  /* Optional: COLLAPSE_WHEN_HIDDEN = true removes the space instead. */
+  body.no-spectrum.collapse .spec, body.no-spectrum.collapse .legend { display: none; }
+
+  /* agenda */
+  .agenda { counter-reset: a; list-style: none; }
+  .agenda li { counter-increment: a; padding-left: 2.2em; margin-bottom: 1vh; }
+  .agenda li::before { content: counter(a); background: var(--pink); color: #fff;
+    width: 1.5em; height: 1.5em; border-radius: 50%; text-align: center; font-weight: 700;
+    font-size: .8em; line-height: 1.5em; top: .15em; }
+  .agenda li.now { color: var(--pink); font-weight: 700; }
+  .time { color: var(--muted); font-size: .8em; font-weight: 400; }
+
+  /* title slide */
+  .slide.title { background: linear-gradient(135deg, var(--pink-dark), var(--pink)); color: #fff; }
+  .slide.title .tag { display: inline-block; align-self: flex-start; background: rgba(255,255,255,.16);
+    border: 1px solid rgba(255,255,255,.4); border-radius: 999px; padding: .3em 1em;
+    font-size: clamp(.9rem, 1.6vw, 1.2rem); margin-bottom: 3vh; letter-spacing: .04em; }
+  .slide.title h1 { font-size: clamp(2.2rem, 5.6vw, 4.4rem); }
+  .slide.title .rule { width: 5em; height: 6px; background: var(--gold); border-radius: 3px; margin: 1vh 0 3vh; }
+  .slide.title .event { font-size: clamp(1.1rem, 2.4vw, 1.8rem); font-weight: 600; }
+  .slide.title .group { font-size: clamp(1rem, 1.9vw, 1.4rem); margin-top: 1.4vh; opacity: .9; }
+
+  /* controls */
+  .nav { position: fixed; bottom: 2.2vh; left: 0; right: 0; display: flex;
+    justify-content: center; align-items: center; gap: 1.5vw; z-index: 10; }
+  .nav button { background: #fff; color: var(--pink-dark); border: 1px solid var(--tint2);
+    border-radius: 8px; padding: .45em 1.1em; font-size: .95rem; cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0,0,0,.12); }
+  .nav button:hover { background: var(--tint); }
+  #spec-toggle { display: none; font-size: .8rem; }
+  .count { color: var(--muted); font-size: .95rem; min-width: 4em; text-align: center; }
+  .progress { position: fixed; top: 0; left: 0; height: 5px; background: var(--gold);
+    transition: width .3s; z-index: 10; }
+  .footer { position: fixed; bottom: 3vh; left: 3vw; color: var(--muted); font-size: .8rem; z-index: 5; }
+  body.on-title .footer { display: none; }
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="deck" id="deck">
+
+  <!-- 1 Title -->
+  <section class="slide title active">
+    <div class="tag">Birds of a Feather</div>
+    <h1>Building an Institutional RSE Community</h1>
+    <div class="rule"></div>
+    <p class="event">USRSE'26 · San Jose, CA · Monday, October 19, 2026</p>
+    <p class="group">US-RSE Institutional RSE Networking Affinity Group</p>
+  </section>
+
+  <!-- 2 CoP + agenda -->
+  <section class="slide">
+    <h2>Today's plan</h2>
+    <div class="cards two" style="margin-top:0;margin-bottom:3vh">
+      <div class="card">
+        <h3>Communities of practice (Wenger, 1998)</h3>
+        <p><strong>Domain</strong> (shared interest) · <strong>Community</strong> (relationships) · <strong>Practice</strong> (shared repertoire). What do ideal local RSE communities look like?</p>
+      </div>
+      <div class="card">
+        <h3>Self-determination theory (Deci &amp; Ryan, 1985)</h3>
+        <p><strong>Autonomy</strong> (acting with choice) · <strong>Competence</strong> (effective and skilled) · <strong>Relatedness</strong> (connected and valued). What helps you thrive?</p>
+      </div>
+    </div>
+    <ol class="agenda">
+      <li class="now">Introduction <span class="time">(10 min)</span></li>
+      <li>Slido poll: identify needs and choose breakout groups <span class="time">(20 min)</span></li>
+      <li>Breakout groups: facilitated, 3+ topics <span class="time">(50 min)</span></li>
+      <li>Share and report</li>
+      <li>Recap and synthesis <span class="time">(10 min)</span></li>
+    </ol>
+  </section>
+
+  <!-- 3 Who are we (presenters on top, shared spectrum at bottom) -->
+  <section class="slide who">
+    <h2>Who are we?</h2>
+    <p class="sub">Five institutions, one affinity group. Each of us sits somewhere different on the spectrum of RSE groups.</p>
+    <div id="people"></div>
+    <div class="legend" id="legend"></div>
+  </section>
+
+  <!-- 4 Why -->
+  <section class="slide">
+    <h2>Why this session? Isolation is common</h2>
+    <div class="stat-row">
+      <div class="stat"><div class="num">24%</div><div class="lbl">were the only developer on a project</div></div>
+      <div class="stat"><div class="num">29%</div><div class="lbl">had only one other developer on their team</div></div>
+    </div>
+    <p class="cite" style="margin-top:0;margin-bottom:3vh">International RSE Survey, 2022</p>
+    <blockquote>“Peer support for new ideas” is one of the top three factors for productivity.</blockquote>
+    <p class="cite">Murphy-Hill et al. (2021)</p>
+  </section>
+
+  <!-- 5 Goals -->
+  <section class="slide">
+    <h2>What we're here to explore</h2>
+    <ul>
+      <li>The practical and social aspects of building or finding <strong>local</strong> RSE communities</li>
+      <li>Why it matters: professional development, mental well-being, mentors, sharing best practices, advocating for institutional support</li>
+      <li>Connection to US-RSE's goal: software engineering in research is <strong>recognized, valued, and sustained</strong></li>
+    </ul>
+  </section>
+
+  <!-- 6 Affinity group -->
+  <section class="slide">
+    <h2>What is the Institutional RSE Networking Affinity Group?</h2>
+    <p class="sub" style="margin-bottom:1vh">The Institutional RSE Networking Affinity Group connects Research Software Engineers (RSEs) who support or aspire to develop RSE communities within their organizations. </p>
+    <div class="cards">
+      <div class="card"><h3>Slack</h3><p>Ongoing conversation <a href="https://usrse.slack.com/archives/C07U53KED19">#ag-institutional-rse-networking</a></p></div>
+      <div class="card"><h3>Meetups</h3><p>On the last Monday of the month at 8am PT/11am ET</p></div>
+      <div class="card"><h3>Blog</h3><p>Check out our website at <a href="https://us-rse.org/ag-institutional-rse-networking/">us-rse.org/ag-institutional-rse-networking/</a> for previous notes and our takeaways from today</p></div>
+    </div>
+    <p class="sub" style="margin-top:2vh">https://us-rse.org/ag-institutional-rse-networking/</p>
+  </section>
+
+  <!-- 7 Readings -->
+  <section class="slide">
+    <h2>What have we read/listened to together?</h2>
+    <ul>
+      <li>
+        <a href="https://www.bluecoding.com/post/10-best-practices-for-building-a-strong-remote-developer-community">
+          <em>Sana Fatima</em> "10 Best Practices For Building a Strong Remote Developer Community" (2024)
+        </a>
+      </li>
+      <li>
+        <a href="https://www.opensourcestories.org/stories/2024/andy-piper-community-needs/">
+          <em>Open Source Stories</em> "Changing communities have changing needs with Andy Piper" (2024)
+        </a>
+      </li>
+      <li><span class="ph">[Reading 3: authors, year, one-line takeaway]</span></li>
+    </ul>
+    <p class="sub" style="margin-top:2vh">These readings shaped the questions we'll bring to the breakouts.</p>
+  </section>
+
+  <!-- 8 SDT -->
+  <section class="slide">
+    <h2>Self-determination theory</h2>
+    <p class="sub" style="margin-bottom:1vh">People are motivated and thrive when three basic psychological needs are met (Deci &amp; Ryan, 1985)</p>
+    <div class="cards">
+      <div class="card"><h3>Autonomy</h3><p>Having a say in how we work and what we build. Local communities can organize for structural change.</p></div>
+      <div class="card"><h3>Competence</h3><p>Feeling effective and growing. Peers offer shared best practices, mentors, and new ideas.</p></div>
+      <div class="card"><h3>Relatedness</h3><p>Feeling connected and that we belong. Peers to share successes, frustrations, and interests.</p></div>
+    </div>
+    <p class="cite">Our framing: why do RSEs seek out local communities?</p>
+  </section>
+
+</div>
+
+<div class="footer">USRSE'26 · Building an Institutional RSE Community</div>
+
+<div class="nav">
+  <button id="prev">← Prev</button>
+  <span class="count" id="count">1 / 8</span>
+  <button id="next">Next →</button>
+  <button id="spec-toggle" title="Show or hide the spectrum (press S)">Spectrum: on</button>
+</div>
+
+<script>
+  /* ============================================================
+     EDIT HERE
+     ------------------------------------------------------------
+     SHOW_SPECTRUM : set to false to hide the spectrum (the shared
+                     bar at the bottom AND each person's line).
+                     You can also press "S" or click the toggle
+                     button while presenting.
+
+     COLLAPSE_WHEN_HIDDEN :
+                     false (default) = hiding the spectrum leaves the
+                       space blank, so the cards stay exactly where
+                       they are and keep the same height.
+                     true = hiding the spectrum removes the space, so
+                       the cards get shorter. Use this if you decide
+                       to drop the spectrum for good.
+
+     SPECTRUM      : labels on the shared bar at the bottom.
+        label : text shown under the bar.
+        at    : where the label sits, as a percentage along the bar
+                (0 = far left, 100 = far right). Any number works.
+                A label at 0 is left-aligned and a label at 100 is
+                right-aligned so neither runs off the edge.
+
+     PRESENTERS    : one entry per person.
+        name, institution, role : text. Anything starting with "["
+                                  is shown highlighted as a placeholder.
+        pos  : where to put the marker on that person's line, as a
+               percentage from 0 (far left) to 100 (far right).
+               Decimals are fine (e.g. 62.5).
+        tbd  : true = marker shows in yellow. false = purple.
+     ============================================================ */
+  const SHOW_SPECTRUM = false;
+  const COLLAPSE_WHEN_HIDDEN = false;
+
+  const SPECTRUM = [
+    { label: "No network",            at: 0   },
+    { label: "Informal network",      at: 25  },
+    { label: "Community of practice", at: 50  },
+    { label: "Embedded RSEs",         at: 75  },
+    { label: "Central RSE group",     at: 100 }
+  ];
+
+  const PRESENTERS = [
+    { name: "J.C. Subida", institution: "Northwestern University", role: "RSE — Division of Health Behaviors", pos: 25, tbd: true },
+    { name: "[Presenter 2]", institution: "[Institution]", role: "[Role — group]", pos: 28, tbd: true },
+    { name: "Alex Koufos", institution: "Stanford University", role: "RSE — Solar Physics Group", pos: 40, tbd: true },
+    { name: "[Presenter 4]", institution: "[Institution]", role: "[Role — group]", pos: 72, tbd: true },
+    { name: "[Presenter 5]", institution: "[Institution]", role: "[Role — group]", pos: 92, tbd: true }
+  ];
+  /* ============================================================ */
+
+  const clampPct = v => Math.max(0, Math.min(100, Number(v)));
+
+  function textEl(tag, cls, text) {
+    const el = document.createElement(tag);
+    if (cls) el.className = cls;
+    if (String(text).trim().startsWith("[")) {
+      const s = document.createElement("span");
+      s.className = "ph";
+      s.textContent = text;
+      el.appendChild(s);
+    } else {
+      el.textContent = text;
+    }
+    return el;
+  }
+
+  function buildLegend() {
+    const legend = document.getElementById("legend");
+    legend.classList.add("spec");
+
+    const title = document.createElement("div");
+    title.className = "legend-title";
+    title.textContent = "Spectrum of RSE groups";
+    legend.appendChild(title);
+
+    const track = document.createElement("div");
+    track.className = "track";
+    SPECTRUM.forEach(s => {
+      const t = document.createElement("span");
+      t.className = "tick";
+      t.style.left = clampPct(s.at) + "%";
+      track.appendChild(t);
+    });
+    legend.appendChild(track);
+
+    const labels = document.createElement("div");
+    labels.className = "legend-labels";
+    SPECTRUM.forEach(s => {
+      const at = clampPct(s.at);
+      const l = document.createElement("span");
+      l.textContent = s.label;
+      l.style.left = at + "%";
+      if (at <= 0) l.classList.add("first");
+      else if (at >= 100) l.classList.add("last");
+      labels.appendChild(l);
+    });
+    legend.appendChild(labels);
+  }
+
+  function buildPeople() {
+    const wrap = document.getElementById("people");
+    PRESENTERS.forEach(p => {
+      const card = document.createElement("div");
+      card.className = "person";
+      card.appendChild(textEl("div", "name", p.name));
+      card.appendChild(textEl("div", "inst", p.institution));
+      card.appendChild(textEl("div", "role", p.role));
+
+      const spec = document.createElement("div");
+      spec.className = "spec";
+      const track = document.createElement("div");
+      track.className = "track";
+      const pin = document.createElement("span");
+      pin.className = "pin" + (p.tbd ? " tbd" : "");
+      pin.style.left = clampPct(p.pos == null ? 50 : p.pos) + "%";
+      track.appendChild(pin);
+      spec.appendChild(track);
+      card.appendChild(spec);
+      wrap.appendChild(card);
+    });
+  }
+
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const toggleBtn = document.getElementById('spec-toggle');
+  let i = 0;
+
+  function setSpectrum(on) {
+    document.body.classList.toggle('no-spectrum', !on);
+    toggleBtn.textContent = 'Spectrum: ' + (on ? 'on' : 'off');
+  }
+  function toggleSpectrum() { setSpectrum(document.body.classList.contains('no-spectrum')); }
+
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, k) => s.classList.toggle('active', k === i));
+    document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
+    document.getElementById('progress').style.width = ((i + 1) / slides.length * 100) + '%';
+    document.body.classList.toggle('on-title', i === 0);
+    /* `i === #` Change to slide_num + 1, wherever the spectrum slide is */
+    toggleBtn.style.display = (i === 2) ? 'inline-block' : 'none';
+  }
+
+  document.getElementById('next').onclick = () => show(i + 1);
+  document.getElementById('prev').onclick = () => show(i - 1);
+  toggleBtn.onclick = toggleSpectrum;
+  document.addEventListener('keydown', e => {
+    if (['ArrowRight', 'ArrowDown', ' ', 'PageDown'].includes(e.key)) { e.preventDefault(); show(i + 1); }
+    if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); show(i - 1); }
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End') show(slides.length - 1);
+    if (e.key === 's' || e.key === 'S') toggleSpectrum();
+  });
+
+  document.body.classList.toggle('collapse', COLLAPSE_WHEN_HIDDEN);
+  buildLegend();
+  buildPeople();
+  setSpectrum(SHOW_SPECTRUM);
+  show(0);
+</script>
+</body>
+</html>
